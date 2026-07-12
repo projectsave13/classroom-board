@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>우리 반 게시판</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fdf6ec;
+    --card: #ffffff;
+    --primary: #e85d2f;
+    --secondary: #f4a843;
+    --accent: #3a86c8;
+    --green: #4caf7d;
+    --text: #2d2013;
+    --muted: #8a7968;
+    --border: #e8dcc8;
+    --shadow: 0 4px 20px rgba(45,32,19,0.10);
+  }
+
+  html.dark body { background: #1a1410 !important; color: #f0e6d3 !important; }
+  html.dark header { background: #000000 !important; box-shadow: 0 3px 12px rgba(0,0,0,0.6) !important; }
+  html.dark .board-card { background: #252018 !important; border-color: #3a3020 !important; box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important; }
+  html.dark .card-title { color: #f0e6d3 !important; }
+  html.dark .card-preview { color: #a89880 !important; }
+  html.dark .detail-card { background: #252018 !important; border-color: #3a3020 !important; }
+  html.dark .detail-header { border-bottom-color: #3a3020 !important; }
+  html.dark .detail-title { color: #f0e6d3 !important; }
+  html.dark .detail-body { color: #f0e6d3 !important; }
+  html.dark .back-btn { border-color: #3a3020 !important; color: #a89880 !important; }
+  html.dark .modal-overlay { background: rgba(0,0,0,0.65) !important; }
+  html.dark .modal { background: #252018 !important; }
+  html.dark .modal h2 { color: #f0e6d3 !important; }
+  html.dark .modal input, html.dark .modal textarea { background: #1a1410 !important; border-color: #3a3020 !important; color: #f0e6d3 !important; }
+  html.dark .modal label { color: #a89880 !important; }
+  html.dark .btn-cancel { border-color: #3a3020 !important; color: #a89880 !important; }
+  html.dark .detail-images img { border-color: #3a3020 !important; }
+  html.dark .upload-zone { background: #1a1410 !important; border-color: #3a3020 !important; }
+  html.dark .upload-zone p { color: #a89880 !important; }
+  html.dark .img-thumb-wrap img { border-color: #3a3020 !important; }
+  html.dark .no-images { color: #a89880 !important; }
+  html.dark .err-msg { color: #ff7755 !important; }
+  html.dark * { transition: background-color 0.2s, color 0.2s, border-color 0.2s; }
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+font-family: 'Noto Sans KR', sans-serif;
+background: var(–bg);
+color: var(–text);
+min-height: 100vh;
+}
+
+/* ── Header ── */
+header {
+background: #111111;
+padding: 18px 32px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+box-shadow: 0 3px 12px rgba(0,0,0,0.40);
+position: sticky;
+top: 0;
+z-index: 100;
+}
+
+.header-title {
+font-family: 'Gaegu', cursive;
+font-weight: 700;
+font-size: 2rem;
+color: #fff;
+letter-spacing: 2px;
+text-shadow: 2px 2px 0 rgba(0,0,0,0.15);
+}
+
+.header-title span {
+font-size: 1.4rem;
+margin-right: 6px;
+}
+
+/* Admin button */
+#adminBtn {
+font-family: 'Noto Sans KR', sans-serif;
+font-size: 0.72rem;
+font-weight: 500;
+color: rgba(255,255,255,0.85);
+background: rgba(255,255,255,0.15);
+border: 1px solid rgba(255,255,255,0.35);
+border-radius: 20px;
+padding: 5px 14px;
+cursor: pointer;
+transition: all .2s;
+white-space: nowrap;
+}
+#adminBtn:hover { background: rgba(255,255,255,0.28); color: #fff; }
+#adminBtn.active {
+background: #fff;
+color: #111111;
+font-weight: 700;
+}
+
+/* ── Main ── */
+main {
+max-width: 960px;
+margin: 0 auto;
+padding: 36px 20px 60px;
+}
+
+/* ── Grid ── */
+#boardGrid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+gap: 20px;
+}
+
+.board-card {
+background: var(–card);
+border-radius: 16px;
+border: 2px solid var(–border);
+padding: 28px 22px 22px;
+cursor: pointer;
+transition: transform .18s, box-shadow .18s, border-color .18s;
+box-shadow: var(–shadow);
+position: relative;
+overflow: hidden;
+}
+
+.board-card::before {
+content: '';
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 5px;
+background: var(–card-color, var(–primary));
+border-radius: 14px 14px 0 0;
+}
+
+.board-card:hover {
+transform: translateY(-5px);
+box-shadow: 0 12px 32px rgba(45,32,19,0.15);
+border-color: var(–card-color, var(–primary));
+}
+
+.card-icon {
+font-size: 2.2rem;
+margin-bottom: 12px;
+display: block;
+}
+
+.card-title {
+font-weight: 700;
+font-size: 1.05rem;
+color: var(–text);
+margin-bottom: 8px;
+line-height: 1.3;
+}
+
+.card-preview {
+font-size: 0.82rem;
+color: var(–muted);
+line-height: 1.6;
+display: -webkit-box;
+-webkit-line-clamp: 2;
+-webkit-box-orient: vertical;
+overflow: hidden;
+}
+
+.card-arrow {
+position: absolute;
+bottom: 14px; right: 16px;
+font-size: 1rem;
+color: var(–card-color, var(–primary));
+opacity: 0.6;
+}
+
+/* Admin edit overlay */
+.card-edit-btn {
+display: none;
+position: absolute;
+top: 10px; right: 10px;
+background: #ffffff;
+color: #111111;
+border: 1px solid #ccc;
+border-radius: 8px;
+padding: 3px 10px;
+font-size: 0.72rem;
+font-family: 'Noto Sans KR', sans-serif;
+cursor: pointer;
+font-weight: 700;
+z-index: 5;
+}
+.admin-mode .card-edit-btn { display: block; }
+
+/* ── Detail View ── */
+#detailView {
+display: none;
+animation: fadeIn .25s ease;
+}
+
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(12px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+
+.back-btn {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+background: none;
+border: 2px solid var(–border);
+border-radius: 30px;
+padding: 8px 20px;
+font-family: 'Noto Sans KR', sans-serif;
+font-size: 0.88rem;
+font-weight: 500;
+color: var(–muted);
+cursor: pointer;
+margin-bottom: 28px;
+transition: all .2s;
+}
+.back-btn:hover { border-color: var(–primary); color: var(–primary); }
+
+.detail-card {
+background: var(–card);
+border-radius: 20px;
+border: 2px solid var(–border);
+overflow: hidden;
+box-shadow: var(–shadow);
+}
+
+.detail-header {
+padding: 28px 32px 24px;
+border-bottom: 2px solid var(–border);
+display: flex;
+align-items: center;
+gap: 16px;
+}
+
+.detail-icon { font-size: 2.8rem; }
+
+.detail-title {
+font-weight: 900;
+font-size: 1.5rem;
+color: var(–text);
+}
+
+.detail-body {
+padding: 28px 32px;
+font-size: 0.98rem;
+line-height: 1.95;
+color: var(–text);
+white-space: pre-wrap;
+min-height: 140px;
+}
+
+/* ── Modal ── */
+.modal-overlay {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.45);
+z-index: 200;
+align-items: center;
+justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+
+.modal {
+background: #fff;
+border-radius: 20px;
+padding: 36px 32px;
+width: min(92vw, 440px);
+box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+animation: popIn .22s ease;
+}
+@keyframes popIn {
+from { transform: scale(.92); opacity: 0; }
+to   { transform: scale(1);   opacity: 1; }
+}
+
+.modal h2 {
+font-size: 1.2rem;
+font-weight: 800;
+margin-bottom: 22px;
+color: var(–text);
+}
+
+.modal label {
+display: block;
+font-size: 0.82rem;
+font-weight: 700;
+color: var(–muted);
+margin-bottom: 6px;
+text-transform: uppercase;
+letter-spacing: .5px;
+}
+
+.modal input, .modal textarea {
+width: 100%;
+border: 2px solid var(–border);
+border-radius: 10px;
+padding: 11px 14px;
+font-family: 'Noto Sans KR', sans-serif;
+font-size: 0.95rem;
+color: var(–text);
+background: var(–bg);
+margin-bottom: 18px;
+outline: none;
+transition: border-color .2s;
+resize: vertical;
+}
+.modal input:focus, .modal textarea:focus { border-color: var(–accent); }
+
+.modal-actions {
+display: flex;
+gap: 10px;
+justify-content: flex-end;
+margin-top: 6px;
+}
+
+.btn-cancel {
+background: none;
+border: 2px solid var(–border);
+border-radius: 10px;
+padding: 10px 22px;
+font-family: 'Noto Sans KR', sans-serif;
+font-size: 0.9rem;
+font-weight: 600;
+color: var(–muted);
+cursor: pointer;
+transition: all .2s;
+}
+.btn-cancel:hover { border-color: #aaa; color: var(–text); }
+
+.btn-save {
+background: #ffffff;
+border: 1.5px solid #ccc;
+border-radius: 10px;
+padding: 10px 24px;
+font-family: 'Noto Sans KR', sans-serif;
+font-size: 0.9rem;
+font-weight: 700;
+color: #111111;
+cursor: pointer;
+transition: background .2s;
+}
+.btn-save:hover { background: #f0f0f0; }
+
+.err-msg {
+color: var(–primary);
+font-size: 0.82rem;
+margin-top: -12px;
+margin-bottom: 12px;
+}
+
+/* ── Photo Gallery ── */
+.detail-images {
+padding: 0 32px 28px;
+display: flex;
+flex-wrap: wrap;
+gap: 12px;
+}
+
+.detail-images img {
+width: calc(33.33% - 8px);
+min-width: 100px;
+aspect-ratio: 1 / 1;
+object-fit: cover;
+border-radius: 12px;
+border: 2px solid var(–border);
+cursor: pointer;
+transition: transform .18s, box-shadow .18s;
+}
+.detail-images img:hover { transform: scale(1.04); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+
+.no-images {
+color: var(–muted);
+font-size: 0.85rem;
+padding: 0 32px 24px;
+}
+
+/* Image upload area */
+.upload-zone {
+border: 2px dashed var(–border);
+border-radius: 12px;
+padding: 20px;
+text-align: center;
+cursor: pointer;
+margin-bottom: 18px;
+transition: border-color .2s, background .2s;
+background: var(–bg);
+}
+.upload-zone:hover { border-color: var(–accent); background: #eef5fd; }
+.upload-zone p { font-size: 0.85rem; color: var(–muted); margin-top: 6px; }
+.upload-zone .upload-icon { font-size: 2rem; }
+
+/* Image preview list in edit modal */
+.img-preview-list {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+margin-bottom: 14px;
+}
+.img-thumb-wrap {
+position: relative;
+width: 72px;
+height: 72px;
+}
+.img-thumb-wrap img {
+width: 72px; height: 72px;
+object-fit: cover;
+border-radius: 8px;
+border: 2px solid var(–border);
+}
+.img-thumb-wrap .del-img {
+position: absolute;
+top: -6px; right: -6px;
+background: var(–primary);
+color: #fff;
+border: none;
+border-radius: 50%;
+width: 20px; height: 20px;
+font-size: 0.7rem;
+cursor: pointer;
+display: flex; align-items: center; justify-content: center;
+font-weight: 700;
+line-height: 1;
+}
+
+/* Lightbox */
+#lightbox {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.88);
+z-index: 300;
+align-items: center;
+justify-content: center;
+}
+#lightbox.show { display: flex; }
+#lightbox img {
+max-width: 92vw;
+max-height: 88vh;
+border-radius: 10px;
+box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+}
+#lightboxClose {
+position: absolute;
+top: 20px; right: 28px;
+background: none;
+border: none;
+color: #fff;
+font-size: 2rem;
+cursor: pointer;
+line-height: 1;
+}
+
+/* edit modal scrollable */
+#editModal .modal { max-height: 90vh; overflow-y: auto; }
+
+/* ── Admin Toolbar ── */
+#adminToolbar {
+display: none;
+position: fixed;
+bottom: 28px;
+left: 28px;
+z-index: 150;
+gap: 10px;
+}
+#adminToolbar.show { display: flex; }
+
+.toolbar-btn {
+background: #ffffff;
+color: #111111;
+border: 1.5px solid #ccc;
+border-radius: 10px;
+padding: 10px 20px;
+font-family: 'Noto Sans KR', sans-serif;
+font-size: 0.88rem;
+font-weight: 700;
+cursor: pointer;
+box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+transition: all .18s;
+}
+.toolbar-btn:hover { background: #f0f0f0; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+
+/* Delete list in modal */
+.delete-item-list { margin-bottom: 10px; }
+.delete-item-row {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 10px 14px;
+border: 1.5px solid #e8dcc8;
+border-radius: 10px;
+margin-bottom: 8px;
+font-size: 0.92rem;
+font-weight: 600;
+}
+.delete-item-row span { flex: 1; }
+.delete-item-row button {
+background: #111;
+color: #fff;
+border: none;
+border-radius: 7px;
+padding: 4px 14px;
+font-family: 'Noto Sans KR', sans-serif;
+font-size: 0.78rem;
+font-weight: 700;
+cursor: pointer;
+transition: background .18s;
+}
+.delete-item-row button:hover { background: #e85d2f; }
+
+html.dark .delete-item-row { border-color: #3a3020 !important; color: #f0e6d3 !important; }
+html.dark .toolbar-btn { background: #2a2018 !important; color: #f0e6d3 !important; border-color: #3a3020 !important; }
+
+/* Admin badge */
+.admin-badge {
+display: none;
+background: var(–secondary);
+color: #fff;
+font-size: 0.75rem;
+font-weight: 700;
+padding: 3px 12px;
+border-radius: 20px;
+margin-left: 12px;
+vertical-align: middle;
+}
+.admin-mode ~ * .admin-badge,
+.admin-badge.show { display: inline; }
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="header-title">
+    <span>📌</span>우리 반 게시판
+    <span id="adminBadge" class="admin-badge">관리자 모드</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <button id="darkToggle" onclick="toggleDark()" title="다크모드 전환" style="font-family:'Noto Sans KR',sans-serif;font-size:1.1rem;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.35);border-radius:20px;padding:5px 12px;cursor:pointer;transition:all .2s;color:#fff;">🌙</button>
+    <button id="adminBtn" onclick="openAdminModal()">관리자 로그인</button>
+  </div>
+</header>
+
+<main>
+  <!-- Board Grid -->
+  <div id="boardGrid"></div>
+
+  <!-- Detail View -->
+
+  <div id="detailView">
+    <button class="back-btn" onclick="goBack()">← 목록으로</button>
+    <div class="detail-card">
+      <div class="detail-header" id="detailHeaderColor">
+        <span class="detail-icon" id="detailIcon"></span>
+        <div>
+          <div class="detail-title" id="detailTitle"></div>
+        </div>
+      </div>
+      <div class="detail-body" id="detailBody"></div>
+      <div id="freeBoardArea" style="display:none; padding: 0 32px 20px;">
+        <textarea id="freeBoardText" rows="6" placeholder="여기에 자유롭게 글을 작성하세요..." style="width:100%;border:2px solid #e8dcc8;border-radius:10px;padding:14px;font-family:'Noto Sans KR',sans-serif;font-size:0.95rem;resize:vertical;outline:none;background:#fdf6ec;color:#2d2013;line-height:1.7;"></textarea>
+        <div style="display:flex;justify-content:flex-end;margin-top:10px;">
+          <button onclick="saveFreeContent()" style="background:#ffffff;color:#111111;border:1.5px solid #ccc;border-radius:10px;padding:9px 24px;font-family:'Noto Sans KR',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;">저장</button>
+        </div>
+      </div>
+      <div id="detailImages" class="detail-images"></div>
+    </div>
+  </div>
+</main>
+
+<!-- Admin Toolbar -->
+<div id="adminToolbar">
+  <button class="toolbar-btn" onclick="openAddModal()">+ 항목 추가</button>
+  <button class="toolbar-btn" onclick="openDeleteModal()">− 항목 삭제</button>
+</div>
+
+<!-- Add Item Modal -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <h2>➕ 항목 추가</h2>
+    <label>아이콘 (이모지)</label>
+    <input type="text" id="addIcon" placeholder="예: 📢" maxlength="4">
+    <label>항목 이름</label>
+    <input type="text" id="addTitle" placeholder="항목 이름을 입력하세요">
+    <label>세부 내용</label>
+    <textarea id="addContent" rows="4" placeholder="내용을 입력하세요"></textarea>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('addModal')">취소</button>
+      <button class="btn-save" onclick="addItem()">추가</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Item Modal -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <h2>🗑️ 항목 삭제</h2>
+    <div class="delete-item-list" id="deleteItemList"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('deleteModal')">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+
+<div id="lightbox">
+  <button id="lightboxClose" onclick="closeLightbox()">✕</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<!-- Login Modal -->
+
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <h2>🔐 관리자 로그인</h2>
+    <label>아이디</label>
+    <input type="text" id="loginId" placeholder="아이디를 입력하세요">
+    <label>비밀번호</label>
+    <input type="password" id="loginPw" placeholder="비밀번호를 입력하세요">
+    <div class="err-msg" id="loginErr"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('loginModal')">취소</button>
+      <button class="btn-save" onclick="doLogin()">로그인</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <h2>✏️ 항목 수정</h2>
+    <label>항목 이름</label>
+    <input type="text" id="editTitle" placeholder="항목 이름">
+    <label>세부 내용</label>
+    <textarea id="editContent" rows="5" placeholder="내용을 입력하세요"></textarea>
+    <label>사진 첨부</label>
+    <div class="img-preview-list" id="imgPreviewList"></div>
+    <div class="upload-zone" id="uploadZone" onclick="document.getElementById('imgFileInput').click()">
+      <div class="upload-icon">📷</div>
+      <p>클릭하여 사진 추가 (여러 장 가능)</p>
+    </div>
+    <input type="file" id="imgFileInput" accept="image/*" multiple style="display:none" onchange="handleImgUpload(event)">
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('editModal')">취소</button>
+      <button class="btn-save" onclick="saveEdit()">저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const COLORS = [
+  '#e85d2f','#f4a843','#3a86c8','#4caf7d','#9b59b6',
+  '#e84393','#1abc9c','#e67e22','#2980b9','#27ae60',
+  '#8e44ad','#c0392b','#16a085','#d35400','#2c3e50'
+];
+
+const ICONS = [
+  '📢','📅','📚','🎨','🏃','🍱','🧹','📝','🎉','💡',
+  '🤝','📣','🏆','🌱','❓'
+];
+
+const DEFAULT_ITEMS = [
+  { title: '공지사항', content: '학급 공지사항을 이곳에 작성합니다.\n새로운 소식이 있을 때마다 업데이트됩니다.' },
+  { title: '이번 달 일정', content: '이번 달 주요 학교 행사 및 일정을 안내합니다.\n시험, 소풍, 방학 등 중요한 날짜를 확인하세요.' },
+  { title: '숙제 / 과제', content: '이번 주 숙제와 과제 목록입니다.\n제출 기한을 꼭 지켜주세요.' },
+  { title: '급식 메뉴', content: '이번 주 급식 메뉴를 확인하세요.\n알레르기 유발 식품은 가정통신문을 참고하세요.' },
+  { title: '자유게시판', content: '누구나 자유롭게 글을 남길 수 있는 공간입니다.', freeBoard: true },
+];
+
+// Load from localStorage or use defaults
+function loadItems() {
+  const saved = localStorage.getItem('classroomItems');
+  if (saved) return JSON.parse(saved);
+  return DEFAULT_ITEMS.map((item, i) => ({ ...item, icon: ICONS[i], color: COLORS[i], images: [] }));
+}
+
+function saveItems(items) {
+  try {
+    localStorage.setItem('classroomItems', JSON.stringify(items));
+  } catch(e) {
+    alert('저장 공간이 부족합니다. 사진 수를 줄여주세요.');
+  }
+}
+
+let items = loadItems();
+let isAdmin = false;
+let editingIdx = null;
+let editImages = []; // base64 strings for current edit session
+
+// ── Render Grid ──
+function renderGrid() {
+  const grid = document.getElementById('boardGrid');
+  grid.innerHTML = '';
+  items.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'board-card';
+    card.style.setProperty('--card-color', item.color);
+    card.innerHTML = `
+      <button class="card-edit-btn" onclick="openEdit(event, ${i})">수정</button>
+      <span class="card-icon">${item.icon}</span>
+      <div class="card-title">${item.title}</div>
+      <div class="card-preview">${item.content}</div>
+      <span class="card-arrow">→</span>
+    `;
+    card.addEventListener('click', () => openDetail(i));
+    grid.appendChild(card);
+  });
+  if (isAdmin) grid.parentElement.classList.add('admin-mode');
+  else grid.parentElement.classList.remove('admin-mode');
+}
+
+// ── Detail ──
+let currentDetailIdx = null;
+
+function openDetail(i) {
+  const item = items[i];
+  currentDetailIdx = i;
+  document.getElementById('boardGrid').style.display = 'none';
+  const dv = document.getElementById('detailView');
+  dv.style.display = 'block';
+  document.getElementById('detailIcon').textContent = item.icon;
+  document.getElementById('detailTitle').textContent = item.title;
+  document.getElementById('detailBody').textContent = item.content;
+  document.getElementById('detailHeaderColor').style.borderLeft = `6px solid ${item.color}`;
+
+  // Free board area
+  const fba = document.getElementById('freeBoardArea');
+  const titleNorm = item.title.trim().replace(/\s+/g, '');
+  if (item.freeBoard || titleNorm.includes('자유게시판')) {
+    fba.style.display = 'block';
+    document.getElementById('freeBoardText').value = item.freeContent || '';
+  } else {
+    fba.style.display = 'none';
+  }
+
+  // Render images
+  const imgContainer = document.getElementById('detailImages');
+  imgContainer.innerHTML = '';
+  const imgs = item.images || [];
+  if (imgs.length > 0) {
+    imgs.forEach((src, idx) => {
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = '첨부 사진';
+      img.onclick = () => openLightbox(src);
+      imgContainer.appendChild(img);
+    });
+  }
+}
+
+function saveFreeContent() {
+  if (currentDetailIdx === null) return;
+  items[currentDetailIdx].freeContent = document.getElementById('freeBoardText').value;
+  saveItems(items);
+  const btn = document.querySelector('#freeBoardArea button');
+  const orig = btn.textContent;
+  btn.textContent = '✓ 저장됨';
+  setTimeout(() => { btn.textContent = orig; }, 1200);
+}
+
+function goBack() {
+  document.getElementById('detailView').style.display = 'none';
+  document.getElementById('boardGrid').style.display = 'grid';
+}
+
+// ── Lightbox ──
+function openLightbox(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.add('show');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('show');
+  document.getElementById('lightboxImg').src = '';
+}
+document.getElementById('lightbox').addEventListener('click', function(e) {
+  if (e.target === this) closeLightbox();
+});
+
+// ── Admin Login ──
+function openAdminModal() {
+  if (isAdmin) { logout(); return; }
+  document.getElementById('loginErr').textContent = '';
+  document.getElementById('loginId').value = '';
+  document.getElementById('loginPw').value = '';
+  document.getElementById('loginModal').classList.add('show');
+  setTimeout(() => document.getElementById('loginId').focus(), 100);
+}
+
+function doLogin() {
+  const id = document.getElementById('loginId').value;
+  const pw = document.getElementById('loginPw').value;
+  if (id === 'rhksflwk' && pw === 'rhksflwk') {
+    isAdmin = true;
+    closeModal('loginModal');
+    document.getElementById('adminBtn').textContent = '관리자 로그아웃';
+    document.getElementById('adminBtn').classList.add('active');
+    document.getElementById('adminBadge').classList.add('show');
+    document.getElementById('adminToolbar').classList.add('show');
+    renderGrid();
+  } else {
+    document.getElementById('loginErr').textContent = '아이디 또는 비밀번호가 올바르지 않습니다.';
+  }
+}
+
+function logout() {
+  isAdmin = false;
+  document.getElementById('adminBtn').textContent = '관리자 로그인';
+  document.getElementById('adminBtn').classList.remove('active');
+  document.getElementById('adminBadge').classList.remove('show');
+  document.getElementById('adminToolbar').classList.remove('show');
+  renderGrid();
+}
+
+// ── Edit ──
+function openEdit(e, i) {
+  e.stopPropagation();
+  editingIdx = i;
+  editImages = [...(items[i].images || [])];
+  document.getElementById('editTitle').value = items[i].title;
+  document.getElementById('editContent').value = items[i].content;
+  renderImgPreviews();
+  document.getElementById('editModal').classList.add('show');
+  setTimeout(() => document.getElementById('editTitle').focus(), 100);
+}
+
+function renderImgPreviews() {
+  const list = document.getElementById('imgPreviewList');
+  list.innerHTML = '';
+  editImages.forEach((src, idx) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'img-thumb-wrap';
+    wrap.innerHTML = `
+      <img src="${src}" alt="미리보기">
+      <button class="del-img" onclick="removeImg(${idx})">✕</button>
+    `;
+    list.appendChild(wrap);
+  });
+}
+
+function removeImg(idx) {
+  editImages.splice(idx, 1);
+  renderImgPreviews();
+}
+
+function compressImage(file, maxPx, quality) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if (w > maxPx || h > maxPx) {
+          if (w > h) { h = Math.round(h * maxPx / w); w = maxPx; }
+          else { w = Math.round(w * maxPx / h); h = maxPx; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function handleImgUpload(e) {
+  const files = Array.from(e.target.files);
+  let loaded = 0;
+  files.forEach(file => {
+    compressImage(file, 900, 0.75).then(compressed => {
+      editImages.push(compressed);
+      loaded++;
+      if (loaded === files.length) renderImgPreviews();
+    });
+  });
+  e.target.value = '';
+}
+
+function saveEdit() {
+  if (editingIdx === null) return;
+  items[editingIdx].title = document.getElementById('editTitle').value || items[editingIdx].title;
+  items[editingIdx].content = document.getElementById('editContent').value;
+  items[editingIdx].images = [...editImages];
+  saveItems(items);
+  closeModal('editModal');
+  renderGrid();
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === this) closeModal(this.id);
+  });
+});
+
+// Enter key in login
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('loginModal').classList.contains('show')) doLogin();
+  if (e.key === 'Escape') closeLightbox();
+});
+
+renderGrid();
+
+// ── Add Item ──
+function openAddModal() {
+  document.getElementById('addIcon').value = '';
+  document.getElementById('addTitle').value = '';
+  document.getElementById('addContent').value = '';
+  document.getElementById('addModal').classList.add('show');
+  setTimeout(() => document.getElementById('addIcon').focus(), 100);
+}
+
+function addItem() {
+  const icon = document.getElementById('addIcon').value.trim() || '📌';
+  const title = document.getElementById('addTitle').value.trim();
+  const content = document.getElementById('addContent').value.trim();
+  if (!title) return;
+  const colorIdx = items.length % COLORS.length;
+  items.push({ title, content, icon, color: COLORS[colorIdx], images: [] });
+  saveItems(items);
+  closeModal('addModal');
+  renderGrid();
+}
+
+// ── Delete Item ──
+function openDeleteModal() {
+  const list = document.getElementById('deleteItemList');
+  list.innerHTML = '';
+  if (items.length === 0) {
+    list.innerHTML = '<p style="color:#888;font-size:0.88rem;">삭제할 항목이 없습니다.</p>';
+  } else {
+    items.forEach((item, i) => {
+      const row = document.createElement('div');
+      row.className = 'delete-item-row';
+      row.innerHTML = `<span>${item.icon} ${item.title}</span><button onclick="deleteItem(${i})">삭제</button>`;
+      list.appendChild(row);
+    });
+  }
+  document.getElementById('deleteModal').classList.add('show');
+}
+
+function deleteItem(i) {
+  if (!confirm(`"${items[i].title}" 항목을 삭제할까요?`)) return;
+  items.splice(i, 1);
+  saveItems(items);
+  closeModal('deleteModal');
+  renderGrid();
+}
+
+// ── Dark Mode ──
+function toggleDark() {
+  const isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('darkMode', isDark ? '1' : '0');
+  document.getElementById('darkToggle').textContent = isDark ? '☀️' : '🌙';
+}
+
+(function initDark() {
+  const saved = localStorage.getItem('darkMode');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (saved === '1' || (saved === null && prefersDark)) {
+    document.documentElement.classList.add('dark');
+    document.getElementById('darkToggle').textContent = '☀️';
+  }
+})();
+</script>
+
+</body>
+</html>
