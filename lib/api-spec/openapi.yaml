@@ -1,0 +1,186 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: chat
+    description: Anonymous suggestion chat
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /chat/rooms:
+    post:
+      operationId: createRoom
+      tags: [chat]
+      summary: Create or get chat room by nickname
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRoomBody"
+      responses:
+        "200":
+          description: Room found or created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatRoom"
+
+  /chat/rooms/all:
+    get:
+      operationId: getAllRooms
+      tags: [chat]
+      summary: Get all chat rooms (admin only)
+      responses:
+        "200":
+          description: List of all rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ChatRoom"
+
+  /chat/rooms/{roomId}/messages:
+    get:
+      operationId: getMessages
+      tags: [chat]
+      summary: Get messages for a room
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ChatMessage"
+    post:
+      operationId: postMessage
+      tags: [chat]
+      summary: Post a message to a room
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostMessageBody"
+      responses:
+        "201":
+          description: Message created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatMessage"
+
+  /chat/rooms/{roomId}:
+    delete:
+      operationId: deleteRoom
+      tags: [chat]
+      summary: Delete a chat room and its messages (admin only)
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    CreateRoomBody:
+      type: object
+      properties:
+        nickname:
+          type: string
+      required:
+        - nickname
+
+    ChatRoom:
+      type: object
+      properties:
+        id:
+          type: integer
+        nickname:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - nickname
+        - createdAt
+
+    PostMessageBody:
+      type: object
+      properties:
+        sender:
+          type: string
+        text:
+          type: string
+      required:
+        - sender
+        - text
+
+    ChatMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+        roomId:
+          type: integer
+        sender:
+          type: string
+        text:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - roomId
+        - sender
+        - text
+        - createdAt
