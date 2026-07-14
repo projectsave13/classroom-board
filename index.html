@@ -176,7 +176,7 @@ opacity: 0.6;
 
 /* Admin edit overlay */
 .card-edit-btn {
-display: none;
+display: block;
 position: absolute;
 top: 10px; right: 10px;
 background: #ffffff;
@@ -190,7 +190,6 @@ cursor: pointer;
 font-weight: 700;
 z-index: 5;
 }
-.admin-mode .card-edit-btn { display: block; }
 
 /* ── Detail View ── */
 #detailView {
@@ -459,6 +458,151 @@ line-height: 1;
 /* edit modal scrollable */
 #editModal .modal { max-height: 90vh; overflow-y: auto; }
 
+/* ── Anonymous Suggestion Box ── */
+#suggestionBtn {
+position: fixed;
+bottom: 28px;
+right: 28px;
+z-index: 150;
+background: #111111;
+color: #ffffff;
+border: none;
+border-radius: 50px;
+padding: 12px 22px;
+font-family: 'Noto Sans KR', sans-serif;
+font-size: 0.88rem;
+font-weight: 700;
+cursor: pointer;
+box-shadow: 0 4px 16px rgba(0,0,0,0.22);
+transition: all .18s;
+display: flex;
+align-items: center;
+gap: 7px;
+}
+#suggestionBtn:hover { background: #333; box-shadow: 0 6px 20px rgba(0,0,0,0.3); transform: translateY(-1px); }
+#suggBadge {
+display: none;
+background: #e53e3e;
+color: #fff;
+border-radius: 50%;
+width: 20px;
+height: 20px;
+font-size: 0.72rem;
+font-weight: 800;
+align-items: center;
+justify-content: center;
+}
+#suggBadge.show { display: flex; }
+
+/* ── Chat thread styles ── */
+.chat-thread {
+margin-bottom: 18px;
+border-bottom: 1px solid #f0f0f0;
+padding-bottom: 14px;
+}
+.chat-thread:last-child { border-bottom: none; }
+.chat-row { display: flex; margin-bottom: 6px; }
+.chat-row.student { justify-content: flex-start; }
+.chat-row.admin   { justify-content: flex-end; }
+.chat-bubble {
+max-width: 78%;
+padding: 9px 14px;
+border-radius: 16px;
+font-size: 0.9rem;
+line-height: 1.55;
+white-space: pre-wrap;
+word-break: break-word;
+}
+.chat-bubble.student {
+background: #f0f0f0;
+color: #222;
+border-bottom-left-radius: 4px;
+}
+.chat-bubble.admin {
+background: #111;
+color: #fff;
+border-bottom-right-radius: 4px;
+}
+.chat-meta {
+font-size: 0.72rem;
+color: #bbb;
+margin: 2px 4px 6px;
+}
+.chat-meta.right { text-align: right; }
+.reply-row {
+display: flex;
+gap: 8px;
+margin-top: 8px;
+align-items: flex-end;
+}
+.reply-row textarea {
+flex: 1;
+border: 1.5px solid #ddd;
+border-radius: 10px;
+padding: 8px 12px;
+font-family: 'Noto Sans KR', sans-serif;
+font-size: 0.85rem;
+resize: none;
+outline: none;
+line-height: 1.5;
+}
+.reply-row button {
+background: #111;
+color: #fff;
+border: none;
+border-radius: 10px;
+padding: 8px 16px;
+font-family: 'Noto Sans KR', sans-serif;
+font-size: 0.83rem;
+font-weight: 700;
+cursor: pointer;
+white-space: nowrap;
+}
+.reply-row button:hover { background: #333; }
+.thread-del {
+float: right;
+background: none;
+border: none;
+cursor: pointer;
+color: #ccc;
+font-size: 0.8rem;
+margin-left: 8px;
+}
+.thread-del:hover { color: #e53e3e; }
+#suggList, #suggChat { max-height: 380px; overflow-y: auto; padding-right: 4px; }
+.sugg-empty { text-align: center; color: #aaa; font-size: 0.9rem; padding: 30px 0; }
+.sugg-divider { border: none; border-top: 1.5px solid #eee; margin: 12px 0; }
+#newSuggArea label { font-size: 0.85rem; color: #555; font-weight: 600; display: block; margin-bottom: 6px; }
+#newSuggArea textarea { width: 100%; border: 1.5px solid #ddd; border-radius: 10px; padding: 10px 14px; font-family: 'Noto Sans KR', sans-serif; font-size: 0.9rem; resize: vertical; outline: none; line-height: 1.6; }
+
+/* Admin account status table */
+.acct-summary { font-size:0.82rem; color:#888; margin-bottom:10px; }
+.acct-table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+.acct-table th { text-align:left; padding:7px 8px; border-bottom:2px solid #eee; color:#888; font-weight:600; font-size:0.78rem; }
+.acct-table td { padding:7px 8px; border-bottom:1px solid #f3f3f3; vertical-align:middle; }
+.acct-table tr:last-child td { border-bottom:none; }
+.acct-table tr:hover td { background:#fafafa; }
+.acct-nick { font-weight:700; font-size:0.88rem; }
+.acct-date { color:#aaa; font-size:0.78rem; }
+.acct-msgcnt { display:inline-block; background:#f0f0f0; color:#555; border-radius:99px; padding:1px 10px; font-size:0.78rem; font-weight:600; }
+.acct-msgcnt.has-msg { background:#111; color:#fff; }
+.btn-acct-chat { background:none; border:1.5px solid #ddd; border-radius:8px; padding:4px 12px; font-size:0.78rem; font-family:'Noto Sans KR',sans-serif; cursor:pointer; color:#444; transition:background .15s; }
+.btn-acct-chat:hover, .btn-acct-chat.active { background:#111; color:#fff; border-color:#111; }
+.btn-acct-del { background:none; border:1.5px solid #fca5a5; border-radius:8px; padding:4px 12px; font-size:0.78rem; font-family:'Noto Sans KR',sans-serif; cursor:pointer; color:#e53e3e; transition:background .15s; }
+.btn-acct-del:hover { background:#e53e3e; color:#fff; border-color:#e53e3e; }
+.acct-chat-expand { display:none; background:#fafafa; border-radius:10px; padding:12px; margin-top:6px; }
+.acct-chat-expand.open { display:block; }
+#acctSearchRow { display:flex; gap:8px; margin-bottom:10px; }
+#acctSearch { flex:1; border:1.5px solid #ddd; border-radius:8px; padding:7px 12px; font-size:0.85rem; font-family:'Noto Sans KR',sans-serif; outline:none; }
+.dark-mode .acct-table th { color:#999; border-bottom-color:#333; }
+.dark-mode .acct-table td { border-bottom-color:#2a2a2a; }
+.dark-mode .acct-table tr:hover td { background:#1e1e1e; }
+.dark-mode .acct-msgcnt { background:#2a2a2a; color:#ccc; }
+.dark-mode .acct-chat-expand { background:#1a1a1a; }
+.dark-mode .btn-acct-chat { border-color:#444; color:#ccc; }
+.dark-mode .btn-acct-chat:hover, .dark-mode .btn-acct-chat.active { background:#fff; color:#111; border-color:#fff; }
+.dark-mode #acctSearch { background:#1a1a1a; color:#eee; border-color:#333; }
+
 /* ── Admin Toolbar ── */
 #adminToolbar {
 display: none;
@@ -541,7 +685,6 @@ vertical-align: middle;
     <span id="adminBadge" class="admin-badge">관리자 모드</span>
   </div>
   <div style="display:flex;align-items:center;gap:8px;">
-    <button id="darkToggle" onclick="toggleDark()" title="다크모드 전환" style="font-family:'Noto Sans KR',sans-serif;font-size:1.1rem;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.35);border-radius:20px;padding:5px 12px;cursor:pointer;transition:all .2s;color:#fff;">🌙</button>
     <button id="adminBtn" onclick="openAdminModal()">관리자 로그인</button>
   </div>
 </header>
@@ -573,10 +716,18 @@ vertical-align: middle;
   </div>
 </main>
 
+<!-- Anonymous Suggestion Button -->
+<button id="suggestionBtn" onclick="openSuggModal()">
+  📬 익명 건의함
+  <span id="suggBadge"></span>
+</button>
+
 <!-- Admin Toolbar -->
 <div id="adminToolbar">
   <button class="toolbar-btn" onclick="openAddModal()">+ 항목 추가</button>
   <button class="toolbar-btn" onclick="openDeleteModal()">− 항목 삭제</button>
+  <button class="toolbar-btn" onclick="openChangePwModal()">🔑 비밀번호 변경</button>
+  <button class="toolbar-btn" onclick="openSuggViewModal()">📬 건의함 확인 <span id="suggToolbarBadge"></span></button>
 </div>
 
 <!-- Add Item Modal -->
@@ -627,6 +778,72 @@ vertical-align: middle;
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('loginModal')">취소</button>
       <button class="btn-save" onclick="doLogin()">로그인</button>
+    </div>
+  </div>
+</div>
+
+<!-- Suggestion Student Modal -->
+<div class="modal-overlay" id="suggModal">
+  <div class="modal">
+    <h2>📬 익명 건의함</h2>
+
+    <!-- step 1: nickname -->
+    <div id="suggNicknameStep">
+      <p style="font-size:0.85rem;color:#888;margin:-8px 0 14px;">나만의 별명을 정하면 선생님과 대화할 수 있어요. 이름 대신 별명을 써도 됩니다.</p>
+      <label>나의 별명</label>
+      <input type="text" id="suggNicknameInput" placeholder="예: 하늘별, 토끼, 익명123" maxlength="20">
+      <div class="err-msg" id="suggErr"></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal('suggModal')">취소</button>
+        <button class="btn-save" onclick="confirmNickname()">대화 시작</button>
+      </div>
+    </div>
+
+    <!-- step 2: chat -->
+    <div id="suggChatStep" style="display:none;">
+      <div id="suggChat"></div>
+      <hr class="sugg-divider">
+      <div id="newSuggArea">
+        <textarea id="suggText" rows="3" placeholder="선생님께 전하고 싶은 내용을 써주세요..."></textarea>
+        <div class="err-msg" id="suggChatErr"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal('suggModal')">닫기</button>
+        <button class="btn-save" onclick="submitSugg()">전송</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Suggestion View Modal (admin only) -->
+<div class="modal-overlay" id="suggViewModal">
+  <div class="modal" style="max-width:580px;">
+    <h2>📋 계정 현황</h2>
+    <div id="acctSearchRow">
+      <input type="text" id="acctSearch" placeholder="별명으로 검색..." oninput="filterAcctTable()" />
+      <button class="btn-cancel" style="background:#fff3f3;color:#e53e3e;border:1.5px solid #e53e3e;padding:7px 14px;font-size:0.82rem;" onclick="clearAllSugg()">전체 삭제</button>
+    </div>
+    <div id="suggList" style="max-height:440px;overflow-y:auto;"></div>
+    <div class="modal-actions">
+      <button class="btn-save" onclick="closeModal('suggViewModal')">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal-overlay" id="changePwModal">
+  <div class="modal">
+    <h2>🔑 비밀번호 변경</h2>
+    <label>현재 비밀번호</label>
+    <input type="password" id="cpCurrent" placeholder="현재 비밀번호">
+    <label>새 비밀번호</label>
+    <input type="password" id="cpNew" placeholder="새 비밀번호 (4자 이상)">
+    <label>새 비밀번호 확인</label>
+    <input type="password" id="cpConfirm" placeholder="새 비밀번호 다시 입력">
+    <div class="err-msg" id="cpErr"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('changePwModal')">취소</button>
+      <button class="btn-save" onclick="doChangePw()">변경</button>
     </div>
   </div>
 </div>
@@ -783,6 +1000,19 @@ document.getElementById('lightbox').addEventListener('click', function(e) {
   if (e.target === this) closeLightbox();
 });
 
+// ── SHA-256 helper ──
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// ── Init: store default password hash if not set ──
+(async () => {
+  if (!localStorage.getItem('adminPwHash')) {
+    localStorage.setItem('adminPwHash', await sha256('rhksflwk'));
+  }
+})();
+
 // ── Admin Login ──
 function openAdminModal() {
   if (isAdmin) { logout(); return; }
@@ -793,20 +1023,57 @@ function openAdminModal() {
   setTimeout(() => document.getElementById('loginId').focus(), 100);
 }
 
-function doLogin() {
+async function doLogin() {
   const id = document.getElementById('loginId').value;
   const pw = document.getElementById('loginPw').value;
-  if (id === 'rhksflwk' && pw === 'rhksflwk') {
+  const storedHash = localStorage.getItem('adminPwHash');
+  const inputHash = await sha256(pw);
+  if (id === 'rhksflwk' && inputHash === storedHash) {
     isAdmin = true;
     closeModal('loginModal');
     document.getElementById('adminBtn').textContent = '관리자 로그아웃';
     document.getElementById('adminBtn').classList.add('active');
     document.getElementById('adminBadge').classList.add('show');
     document.getElementById('adminToolbar').classList.add('show');
+    document.getElementById('suggestionBtn').style.display = 'none';
     renderGrid();
   } else {
     document.getElementById('loginErr').textContent = '아이디 또는 비밀번호가 올바르지 않습니다.';
   }
+}
+
+// ── Change Password ──
+function openChangePwModal() {
+  document.getElementById('cpCurrent').value = '';
+  document.getElementById('cpNew').value = '';
+  document.getElementById('cpConfirm').value = '';
+  document.getElementById('cpErr').textContent = '';
+  document.getElementById('changePwModal').classList.add('show');
+  setTimeout(() => document.getElementById('cpCurrent').focus(), 100);
+}
+
+async function doChangePw() {
+  const current = document.getElementById('cpCurrent').value;
+  const newPw = document.getElementById('cpNew').value;
+  const confirm = document.getElementById('cpConfirm').value;
+  const errEl = document.getElementById('cpErr');
+  const storedHash = localStorage.getItem('adminPwHash');
+  const currentHash = await sha256(current);
+  if (currentHash !== storedHash) {
+    errEl.textContent = '현재 비밀번호가 올바르지 않습니다.';
+    return;
+  }
+  if (newPw.length < 4) {
+    errEl.textContent = '새 비밀번호는 4자 이상이어야 합니다.';
+    return;
+  }
+  if (newPw !== confirm) {
+    errEl.textContent = '새 비밀번호가 일치하지 않습니다.';
+    return;
+  }
+  localStorage.setItem('adminPwHash', await sha256(newPw));
+  closeModal('changePwModal');
+  alert('비밀번호가 변경되었습니다.');
 }
 
 function logout() {
@@ -815,8 +1082,301 @@ function logout() {
   document.getElementById('adminBtn').classList.remove('active');
   document.getElementById('adminBadge').classList.remove('show');
   document.getElementById('adminToolbar').classList.remove('show');
+  document.getElementById('suggestionBtn').style.display = 'flex';
   renderGrid();
 }
+
+// ── Chat API helpers ──
+const API = '/api';
+function esc(str) { return String(str).replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmtTime(iso) { return new Date(iso).toLocaleString('ko-KR'); }
+
+// nickname + roomId stored per-browser
+function getNickname() { return localStorage.getItem('chatNickname') || ''; }
+function setNickname(n) { localStorage.setItem('chatNickname', n); }
+function getSavedRoomId() { const v = localStorage.getItem('chatRoomId'); return v ? parseInt(v, 10) : null; }
+function setSavedRoomId(id) { localStorage.setItem('chatRoomId', String(id)); }
+
+let currentRoomId = null;
+let currentRoomNickname = '';
+let pollTimer = null;
+
+function updateSuggBadge() {
+  // badge is driven by unread count — simplified: just show '!' if room exists
+  const badge = document.getElementById('suggBadge');
+  const tb = document.getElementById('suggToolbarBadge');
+  badge.classList.remove('show');
+  if (tb) tb.textContent = '';
+}
+
+// ── Student flow ──
+async function openSuggModal() {
+  const savedId = getSavedRoomId();
+  const savedNick = getNickname();
+  if (savedId && savedNick) {
+    // verify room still exists (admin may have deleted it)
+    const check = await fetch(`${API}/chat/rooms/${savedId}`);
+    if (!check.ok) {
+      // room was deleted — clear and let student re-register
+      localStorage.removeItem('chatNickname');
+      localStorage.removeItem('chatRoomId');
+      showNicknameStep();
+      document.getElementById('suggModal').classList.add('show');
+      document.getElementById('suggErr').textContent = '계정이 초기화되었습니다. 새 별명으로 등록해 주세요.';
+      return;
+    }
+    // returning user — enter directly with stored room id
+    currentRoomId = savedId;
+    currentRoomNickname = savedNick;
+    document.getElementById('suggNicknameStep').style.display = 'none';
+    document.getElementById('suggChatStep').style.display = 'block';
+    document.querySelector('#suggModal h2').textContent = `📬 ${esc(savedNick)}의 건의함`;
+    document.getElementById('suggModal').classList.add('show');
+    await loadStudentMessages();
+    startPolling();
+  } else {
+    // first time — ask for nickname
+    showNicknameStep();
+    document.getElementById('suggModal').classList.add('show');
+  }
+}
+
+function showNicknameStep() {
+  document.getElementById('suggChat').innerHTML = '';
+  document.getElementById('suggChatStep').style.display = 'none';
+  document.getElementById('suggNicknameStep').style.display = 'block';
+  document.getElementById('suggNicknameInput').value = '';
+  document.getElementById('suggErr').textContent = '';
+  setTimeout(() => document.getElementById('suggNicknameInput').focus(), 100);
+}
+
+async function confirmNickname() {
+  const nick = document.getElementById('suggNicknameInput').value.trim();
+  if (!nick) { document.getElementById('suggErr').textContent = '별명을 입력해 주세요.'; return; }
+  await enterRoom(nick);
+}
+
+async function enterRoom(nickname) {
+  try {
+    const res = await fetch(`${API}/chat/rooms`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nickname })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      document.getElementById('suggErr').textContent = err.error || '오류가 발생했습니다.';
+      return;
+    }
+    const room = await res.json();
+    currentRoomId = room.id;
+    currentRoomNickname = room.nickname;
+    setNickname(room.nickname);
+    setSavedRoomId(room.id);
+
+    document.getElementById('suggNicknameStep').style.display = 'none';
+    document.getElementById('suggChatStep').style.display = 'block';
+    document.getElementById('suggText').value = '';
+
+    document.querySelector('#suggModal h2').textContent = `📬 ${esc(room.nickname)}의 건의함`;
+
+    document.getElementById('suggModal').classList.add('show');
+    await loadStudentMessages();
+    startPolling();
+  } catch(e) {
+    document.getElementById('suggErr').textContent = '서버에 연결할 수 없습니다.';
+  }
+}
+
+async function loadStudentMessages() {
+  if (!currentRoomId) return;
+  const res = await fetch(`${API}/chat/rooms/${currentRoomId}/messages`);
+  const msgs = await res.json();
+  renderStudentChat(msgs);
+}
+
+function renderStudentChat(msgs) {
+  const el = document.getElementById('suggChat');
+  if (!msgs.length) {
+    el.innerHTML = '<div class="sugg-empty">아직 대화 내역이 없습니다. 첫 건의를 남겨보세요!</div>';
+    return;
+  }
+  el.innerHTML = msgs.map(m => {
+    const isMe = m.sender === currentRoomNickname;
+    return `
+      <div class="chat-row ${isMe ? 'student' : 'admin'}">
+        <div class="chat-bubble ${isMe ? 'student' : 'admin'}">${esc(m.text)}</div>
+      </div>
+      <div class="chat-meta ${isMe ? '' : 'right'}">${isMe ? currentRoomNickname : '선생님'} · ${fmtTime(m.createdAt)}</div>
+    `;
+  }).join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+async function submitSugg() {
+  const text = document.getElementById('suggText').value.trim();
+  if (!text) { document.getElementById('suggErr').textContent = '내용을 입력해 주세요.'; return; }
+  if (!currentRoomId) return;
+  await fetch(`${API}/chat/rooms/${currentRoomId}/messages`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sender: currentRoomNickname, text })
+  });
+  document.getElementById('suggText').value = '';
+  await loadStudentMessages();
+}
+
+function startPolling() {
+  stopPolling();
+  pollTimer = setInterval(loadStudentMessages, 5000);
+}
+function stopPolling() {
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+}
+
+// stop polling when modal closes
+const origCloseModal = closeModal;
+window.closeModal = function(id) {
+  origCloseModal(id);
+  if (id === 'suggModal') stopPolling();
+};
+
+// ── Admin flow ──
+let acctAllRooms = []; // cache for filter
+
+async function openSuggViewModal() {
+  if (!isAdmin) return;
+  await renderSuggList();
+  document.getElementById('suggViewModal').classList.add('show');
+}
+
+async function renderSuggList() {
+  const list = document.getElementById('suggList');
+  list.innerHTML = '<div class="sugg-empty">불러오는 중...</div>';
+  const res = await fetch(`${API}/chat/rooms/all`);
+  const rooms = await res.json();
+
+  if (!rooms.length) {
+    acctAllRooms = [];
+    list.innerHTML = '<div class="sugg-empty">등록된 학생이 없습니다.</div>';
+    return;
+  }
+
+  const allMsgs = await Promise.all(
+    rooms.map(r => fetch(`${API}/chat/rooms/${r.id}/messages`).then(r2 => r2.json()))
+  );
+
+  acctAllRooms = rooms.map((room, ri) => ({ room, msgs: allMsgs[ri] }));
+  renderAcctTable(acctAllRooms);
+}
+
+function renderAcctTable(entries) {
+  const list = document.getElementById('suggList');
+  const total = entries.length;
+  const withMsg = entries.filter(e => e.msgs.length > 0).length;
+
+  list.innerHTML = `
+    <div class="acct-summary">총 <strong>${total}</strong>명 등록 · 메시지 있는 학생 <strong>${withMsg}</strong>명</div>
+    <table class="acct-table">
+      <thead>
+        <tr>
+          <th>별명</th>
+          <th>가입일</th>
+          <th>메시지</th>
+          <th style="text-align:right">관리</th>
+        </tr>
+      </thead>
+      <tbody id="acctTbody">
+        ${entries.map(({ room, msgs }) => {
+          const cnt = msgs.length;
+          const lastMsg = msgs[msgs.length - 1];
+          const lastTime = lastMsg ? fmtTime(lastMsg.createdAt) : null;
+          return `
+            <tr>
+              <td>
+                <div class="acct-nick">🙂 ${esc(room.nickname)}</div>
+                ${lastTime ? `<div class="acct-date">마지막: ${lastTime}</div>` : ''}
+              </td>
+              <td><span class="acct-date">${fmtTime(room.createdAt)}</span></td>
+              <td><span class="acct-msgcnt ${cnt > 0 ? 'has-msg' : ''}">${cnt}개</span></td>
+              <td style="text-align:right;white-space:nowrap;">
+                <button class="btn-acct-chat" id="btnChat${room.id}" onclick="toggleChatExpand(${room.id})">💬 채팅</button>
+                <button class="btn-acct-del" onclick="deleteRoom(${room.id}, '${esc(room.nickname)}')">🗑 삭제</button>
+              </td>
+            </tr>
+            <tr id="expandRow${room.id}" style="display:none;">
+              <td colspan="4" style="padding:0 8px 12px;">
+                <div class="acct-chat-expand open">
+                  ${cnt === 0 ? '<div class="chat-meta" style="text-align:center;padding:10px 0;">메시지 없음</div>' :
+                    msgs.map(m => {
+                      const isStu = m.sender !== '선생님';
+                      return `
+                        <div class="chat-row ${isStu ? 'student' : 'admin'}">
+                          <div class="chat-bubble ${isStu ? 'student' : 'admin'}">${esc(m.text)}</div>
+                        </div>
+                        <div class="chat-meta ${isStu ? '' : 'right'}">${esc(m.sender)} · ${fmtTime(m.createdAt)}</div>
+                      `;
+                    }).join('')
+                  }
+                  <div class="reply-row" style="margin-top:10px;">
+                    <textarea id="adminReply${room.id}" rows="2" placeholder="${esc(room.nickname)}에게 답장..."></textarea>
+                    <button onclick="sendAdminReply(${room.id})">답장</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function filterAcctTable() {
+  const q = document.getElementById('acctSearch').value.trim().toLowerCase();
+  if (!q) { renderAcctTable(acctAllRooms); return; }
+  const filtered = acctAllRooms.filter(e => e.room.nickname.toLowerCase().includes(q));
+  renderAcctTable(filtered);
+}
+
+function toggleChatExpand(roomId) {
+  const row = document.getElementById(`expandRow${roomId}`);
+  const btn = document.getElementById(`btnChat${roomId}`);
+  if (!row) return;
+  const isOpen = row.style.display !== 'none';
+  row.style.display = isOpen ? 'none' : '';
+  btn.classList.toggle('active', !isOpen);
+}
+
+async function sendAdminReply(roomId) {
+  const el = document.getElementById(`adminReply${roomId}`);
+  const text = el.value.trim();
+  if (!text) return;
+  await fetch(`${API}/chat/rooms/${roomId}/messages`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sender: '선생님', text })
+  });
+  el.value = '';
+  await renderSuggList();
+}
+
+async function deleteRoom(roomId, nickname) {
+  const label = nickname ? `"${nickname}" 계정` : '이 대화';
+  if (!confirm(`${label}을 완전히 삭제하시겠습니까?\n삭제하면 해당 학생이 새 별명으로 다시 등록할 수 있습니다.`)) return;
+  await fetch(`${API}/chat/rooms/${roomId}`, { method: 'DELETE' });
+  await renderSuggList();
+}
+
+async function clearAllSugg() {
+  if (!confirm('모든 학생 계정과 대화를 삭제하시겠습니까?\n삭제 후에는 학생들이 새 별명으로 다시 등록할 수 있습니다.')) return;
+  const res = await fetch(`${API}/chat/rooms/all`);
+  const rooms = await res.json();
+  await Promise.all(rooms.map(r => fetch(`${API}/chat/rooms/${r.id}`, { method: 'DELETE' })));
+  await renderSuggList();
+}
+
+updateSuggBadge();
 
 // ── Edit ──
 function openEdit(e, i) {
@@ -960,20 +1520,7 @@ function deleteItem(i) {
 }
 
 // ── Dark Mode ──
-function toggleDark() {
-  const isDark = document.documentElement.classList.toggle('dark');
-  localStorage.setItem('darkMode', isDark ? '1' : '0');
-  document.getElementById('darkToggle').textContent = isDark ? '☀️' : '🌙';
-}
-
-(function initDark() {
-  const saved = localStorage.getItem('darkMode');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if (saved === '1' || (saved === null && prefersDark)) {
-    document.documentElement.classList.add('dark');
-    document.getElementById('darkToggle').textContent = '☀️';
-  }
-})();
+document.documentElement.classList.add('dark');
 </script>
 
 </body>
